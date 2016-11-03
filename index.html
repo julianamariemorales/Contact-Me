@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<head>
+  <header>SEND A MESSAGE TO JULES</header>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <!-- main.css -->
+  <link rel="stylesheet" href="css/main.css">
+
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+
+        $(function(){
+            var iosocket = io.connect();
+            iosocket.on('connect', function () {
+                $('#in-name').append($('<li>Connected</li>'));
+
+                //name
+                iosocket.on('message', function(message) {
+                    $('#in-name').append($('<li></li>').text(message));
+                    $('#in-email').append($('<li></li>').text(message));
+                    $('#in-message').append($('<li></li>').text(message));
+                });
+
+                /*
+                //email
+                iosocket.on('message', function(message) {
+                    $('#in-email').append($('<li></li>').text(message));
+                });
+
+                //message
+                iosocket.on('message', function(message) {
+                    $('#in-message').append($('<li></li>').text(message));
+                });
+                */
+
+                iosocket.on('disconnect', function() {
+                    $('#in-name').append('<li>Disconnected</li>');
+                });
+            });
+
+            $('#out-message').keypress(function(event) {
+                if(event.which == 13) {
+                    event.preventDefault();
+                    //name
+                    iosocket.send($('#out-name').val());
+                    $('#in-name').append($('<li></li>').text($('#out-name').val()));
+                    $('#out-name').val('');
+
+                    //email
+                    iosocket.send($('#out-email').val());
+                    $('#in-email').append($('<li></li>').text($('#out-email').val()));
+                    $('#out-email').val('');
+
+                    //message
+                    iosocket.send($('#out-message').val());
+                    $('#in-message').append($('<li></li>').text($('#out-message').val()));
+                    $('#out-message').val('');
+
+                }
+
+            });
+
+        });
+
+    </script>
+  </head>
+
+  <body>
+    <!--
+  <form id="form" class="topBefore">
+    <input id="in-name" type="text" placeholder="NAME">
+    <input id="in-email" type="text" placeholder="E-MAIL">
+    <textarea id="in-message" type="text" placeholder="MESSAGE"></textarea>
+    <input id="submit" type="submit" value="GO!">
+  </form>
+-->
+  Incoming Message:
+  <ul id=in-name> </ul> <br>
+  <ul id="in-email"></ul><br>
+  <ul id="in-message"></ul> <br>
+
+  <br/>
+  <input type="text" id="out-name" placeholder="NAME"><br>
+  <input type="text" id="out-email" placeholder="E-MAIL"><br>
+  <input type="textarea" id="out-message" placeholder="MESSAGE"><br>
+
+
+  </body>
+
+  </html>
